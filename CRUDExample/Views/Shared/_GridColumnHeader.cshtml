@@ -1,0 +1,29 @@
+﻿@model PersonSearchOptions
+@{
+	var personSearchOption = (Dictionary<PersonSearchOptions, string>)ViewBag.SearchFields;
+
+	PersonSearchOptions currentSearchBy = ViewBag.CurrentSearchBy;
+	string currentSearch = ViewBag.CurrentSearch;
+	PersonSearchOptions? currentSortBy = ViewBag.CurrentSortBy;
+	SortOrderOptions currentSortOrder = ViewBag.CurrentSortOrder;
+
+	//New link by default sorts ascending
+	var newSortOrder = SortOrderOptions.ASC;
+
+	//If the current sort is by this column and ascending, the new link should sort descending
+	if (currentSortBy == Model && currentSortOrder == SortOrderOptions.ASC)
+	{
+		newSortOrder = SortOrderOptions.DESC;
+	}
+}
+
+<a href="~/persons/index?searchBy=@currentSearchBy&search=@Uri.EscapeDataString(currentSearch ?? "")&sortBy=@Model&sortOrder=@newSortOrder">@personSearchOption[Model]</a>
+
+@if (currentSortBy == Model && currentSortOrder == SortOrderOptions.ASC)
+{
+	<i class="fa-solid fa-sort-up"></i>
+}
+else if (currentSortBy == Model && currentSortOrder == SortOrderOptions.DESC)
+{
+	<i class="fa-solid fa-sort-down"></i>
+}

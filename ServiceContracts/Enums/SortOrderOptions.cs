@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ServiceContracts.Enums
 {
-    public enum SortOrderEnum
+    public enum SortOrderOptions
     {
         ASC, DESC
     }

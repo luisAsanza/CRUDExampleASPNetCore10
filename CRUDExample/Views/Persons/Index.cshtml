@@ -1,6 +1,85 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<PersonResponse>
 @{
-    ViewBag.Title = "Persons";
+	ViewBag.Title = "Persons";
+	var personSearchOption = (Dictionary<PersonSearchOptions, string>)ViewBag.SearchFields;
+
+	PersonSearchOptions currentSearchBy = ViewBag.CurrentSearchBy;
+	string currentSearch = ViewBag.CurrentSearch;
+	PersonSearchOptions? currentSortBy = ViewBag.CurrentSortBy;
+	SortOrderOptions currentSortOrder = ViewBag.CurrentSortOrder;
 }
+
+<h1>Persons</h1>
+
+<form action="~/persons/index" method="get">
+	<div class="box flex">
+		<div class="flex-1">
+			<select class="form-input" name="searchBy">
+				@foreach (var searchOption in personSearchOption)
+				{
+					if (ViewBag.CurrentSearchBy == searchOption.Key)
+					{
+						<option value="@searchOption.Key" selected>@searchOption.Value</option>
+					}
+					else
+					{
+						<option value="@searchOption.Key">@searchOption.Value</option>
+					}
+				}
+			</select>
+		</div>
+		<div class="flex-1">
+			<input type="search" id="Search" class="form-input" placeholder="Search" name="search" value="@ViewBag.CurrentSearch" />
+		</div>
+		<div class="flex-1">
+			<button class="button button-blue-back" type="submit">Search</button>
+			<a href="~/persons/index" class="link-hover">Clear all</a>
+		</div>
+	</div>
+</form>
+
+<table class="table w-100 mt">
+	<thead>
+		<tr>
+			<th>
+				@await Html.PartialAsync("_GridColumnHeader", PersonSearchOptions.PersonName)
+			</th>
+			<th>
+				@await Html.PartialAsync("_GridColumnHeader", PersonSearchOptions.Email)
+			</th>
+			<th>
+				@await Html.PartialAsync("_GridColumnHeader", PersonSearchOptions.DateOfBirth)
+			</th>
+			<th>
+				@await Html.PartialAsync("_GridColumnHeader", PersonSearchOptions.Age)
+			</th>
+			<th>
+				@await Html.PartialAsync("_GridColumnHeader", PersonSearchOptions.Gender)
+			</th>
+			<th>
+				@await Html.PartialAsync("_GridColumnHeader", PersonSearchOptions.Country)
+			</th>
+			<th>
+				@await Html.PartialAsync("_GridColumnHeader", PersonSearchOptions.Address)
+			</th>
+			<th>
+				@await Html.PartialAsync("_GridColumnHeader", PersonSearchOptions.ReceiveNewsLetter)
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (PersonResponse person in Model)
+		{
+			<tr>
+				<td>@person.PersonName</td>
+				<td>@person.Email</td>
+				<td>@person.DateOfBirth?.ToString("dd MM yyyy")</td>
+				<td>@person.Age</td>
+				<td>@person.Gender</td>
+				<td>@person.Country</td>
+				<td>@person.Address</td>
+				<td>@person.ReceiveNewsLetters</td>
+			</tr>
+		}
+	</tbody>
+</table>
