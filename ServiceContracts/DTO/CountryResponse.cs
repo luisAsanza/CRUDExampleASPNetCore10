@@ -10,12 +10,12 @@ namespace ServiceContracts.DTO
     /// </summary>
     public class CountryResponse
     {
-        public Guid CountryID { get; set; }
+        public Guid CountryId { get; set; }
         public string? CountryName { get; set; }
 
         public override string ToString()
         {
-            return $"CountryID: {CountryID}, CountryName: {CountryName ?? "N/A"}";
+            return $"CountryID: {CountryId}, CountryName: {CountryName ?? "N/A"}";
         }
     }
 
@@ -25,7 +25,7 @@ namespace ServiceContracts.DTO
         {
             return new CountryResponse
             {
-                CountryID = country.CountryID,
+                CountryId = country.CountryId,
                 CountryName = country.CountryName
             };
         }

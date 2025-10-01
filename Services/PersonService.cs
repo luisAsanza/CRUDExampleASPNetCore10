@@ -48,7 +48,7 @@ namespace Services
 
         public List<PersonResponse> GetAllPersons()
         {
-            var allPersons = _persons.Select(p => p.ToPersonResponse()).ToList();
+            var allPersons = _persons.Select(p => ConvertPersonToPersonResponse(p)).ToList();
 
             return allPersons;
         }

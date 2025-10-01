@@ -13,7 +13,7 @@ namespace ServiceContracts.DTO
         {
             return new Country()
             {
-                CountryID = new Guid(),
+                CountryId = new Guid(),
                 CountryName = CountryName
             };
         }

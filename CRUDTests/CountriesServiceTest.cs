@@ -76,7 +76,7 @@ namespace CRUDTests
             var current = _countryService.AddCountry(request);
 
             //Assert
-            Assert.True(current.CountryID != Guid.Empty);
+            Assert.True(current.CountryId != Guid.Empty);
         }
 
         #endregion
@@ -129,9 +129,9 @@ namespace CRUDTests
             IEnumerable<CountryResponse> allCountries = _countryService.GetAllCountries();
 
             //Assert
-            Assert.True(response.CountryID != Guid.Empty);
+            Assert.True(response.CountryId != Guid.Empty);
             Assert.Contains<CountryResponse>(allCountries, 
-                item => item.CountryName == "Japan" && item.CountryID != Guid.Empty
+                item => item.CountryName == "Japan" && item.CountryId != Guid.Empty
                 );
         }
 
@@ -173,13 +173,13 @@ namespace CRUDTests
             var countryResponse = _countryService.AddCountry(new CountryAddRequest() { CountryName = countryName });
 
             //Act
-            CountryResponse? actual = _countryService.GetCountry(countryResponse.CountryID);
+            CountryResponse? actual = _countryService.GetCountry(countryResponse.CountryId);
 
             _testOutputHelper.WriteLine(actual?.ToString());
 
             //Assert
             Assert.NotNull(actual);
-            Assert.NotEqual(Guid.Empty, actual.CountryID);
+            Assert.NotEqual(Guid.Empty, actual.CountryId);
             Assert.Equal(countryName, actual.CountryName);
         }
 
