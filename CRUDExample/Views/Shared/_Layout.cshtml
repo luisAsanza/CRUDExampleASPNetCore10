@@ -10,7 +10,9 @@
 <body>
     <div class="container">
         <div class="navbar">
-            <div class="navbar-brand">CRUD Demo</div>
+            <div class="navbar-brand">
+                <img src="~/logo.png" width="35px" asp-append-version="true" />
+            </div>
             <ul>
                 <li>
                     <a href="~/persons/index">Persons</a>
@@ -22,5 +24,9 @@
             @RenderBody()
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" asp-fallback-test="window.jQuery" asp-fallback-src="~/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	@RenderSection("Scripts", required: false)
 </body>
 </html>

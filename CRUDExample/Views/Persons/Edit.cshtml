@@ -1,16 +1,19 @@
-﻿@model PersonAddRequest
+﻿@model PersonUpdateRequest
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-	ViewBag.Title = "Create Person";
+	ViewBag.Title = "Edit Person";
 }
 
 <a asp-controller="Persons" asp-action="Index" class="link-hover">Back to Persons List</a>
-<h2>Create Person</h2>
+<h2>Edit Person</h2>
 
 <div class="w-50">
-	<form asp-controller="Persons" asp-action="Create" method="post">
+	<form asp-controller="Persons" asp-action="Edit" method="post">
+		@*Hidden*@
+		<input type="hidden" asp-for="PersonId" />
+
 		@*Person Name*@
 		<div class="form-field flex">
 			<div class="w-25">
@@ -108,7 +111,7 @@
 			<div class="w-25">
 			</div>
 			<div class="flex-1">
-				<button class="button button-green-back">Create</button>
+				<button class="button button-green-back">Update</button>
 				<div asp-validation-summary="All"></div>
 				@if (ViewBag.Errors != null)
 				{

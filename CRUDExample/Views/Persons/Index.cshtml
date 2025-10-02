@@ -11,9 +11,9 @@
 
 <h1>Persons</h1>
 
-<a href="~/persons/create">Create Person</a>
+<a asp-controller="Persons" asp-action="Create">Create Person</a>
 
-<form action="~/persons/index" method="get">
+<form asp-controller="Persons" asp-action="Index" method="get">
 	<div class="box flex">
 		<div class="flex-1">
 			<select class="form-input" name="searchBy">
@@ -35,7 +35,7 @@
 		</div>
 		<div class="flex-1">
 			<button class="button button-blue-back" type="submit">Search</button>
-			<a href="~/persons/index" class="link-hover">Clear all</a>
+			<a asp-controller="Persons" asp-action="Index" class="link-hover">Clear all</a>
 		</div>
 	</div>
 </form>
@@ -50,6 +50,7 @@
 		<col style="width:10%">  <!-- Country -->
 		<col style="width:18%">  <!-- Address -->
 		<col style="width:11%">   <!-- Receive News Letter -->
+		<col style="width:20%">   <!-- Receive News Letter -->
 	</colgroup>
 	<thead>
 		<tr>
@@ -77,6 +78,7 @@
 			<th>
 				@await Html.PartialAsync("_GridColumnHeader", PersonSearchOptions.ReceiveNewsLetter)
 			</th>
+			<th>Actions</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -91,6 +93,10 @@
 				<td>@person.Country</td>
 				<td>@person.Address</td>
 				<td>@person.ReceiveNewsLetters</td>
+				<td>
+					<a asp-controller="Persons" asp-action="Edit" asp-route-personId="@person.PersonId">Edit</a>
+					<a asp-controller="Persons" asp-action="Delete" asp-route-personId="@person.PersonId">Delete</a>
+				</td>
 			</tr>
 		}
 	</tbody>
