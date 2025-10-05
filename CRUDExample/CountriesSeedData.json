@@ -1,0 +1,22 @@
+[
+  {
+    "CountryId": "ef684ba0-0ad5-41d1-8223-4122c149f9da",
+    "CountryName": "Argentina"
+  },
+  {
+    "CountryId": "ad914740-7d42-4374-83a0-6b939e2f1f05",
+    "CountryName": "Brazil"
+  },
+  {
+    "CountryId": "f6564641-ad62-41d0-9778-f289d6d434be",
+    "CountryName": "Canada"
+  },
+  {
+    "CountryId": "3c16db02-611f-40cd-ba34-43cc493ac676",
+    "CountryName": "Chile"
+  },
+  {
+    "CountryId": "08852737-942a-48e2-8622-6654af313a09",
+    "CountryName": "China"
+  }
+]

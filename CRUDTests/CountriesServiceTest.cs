@@ -1,4 +1,6 @@
-﻿using ServiceContracts;
+﻿using Entities;
+using Microsoft.EntityFrameworkCore;
+using ServiceContracts;
 using ServiceContracts.DTO;
 using Services;
 using Xunit.Abstractions;
@@ -12,7 +14,7 @@ namespace CRUDTests
 
         public CountriesServiceTest(ITestOutputHelper testOutputHelper)
         {
-            _countryService = new CountriesService();
+            _countryService = new CountriesService(new PersonsDbContext(new DbContextOptionsBuilder<PersonsDbContext>().Options));
             _testOutputHelper = testOutputHelper;
         }
 
@@ -130,7 +132,7 @@ namespace CRUDTests
 
             //Assert
             Assert.True(response.CountryId != Guid.Empty);
-            Assert.Contains<CountryResponse>(allCountries, 
+            Assert.Contains<CountryResponse>(allCountries,
                 item => item.CountryName == "Japan" && item.CountryId != Guid.Empty
                 );
         }

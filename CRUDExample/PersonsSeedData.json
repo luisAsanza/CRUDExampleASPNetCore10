@@ -1,0 +1,32 @@
+[
+  {
+    "PersonId": "9403db58-adc5-494b-a455-b075aa7cfc46",
+    "PersonName": "Alice Johnson",
+    "Email": "alice.johnson@example.com",
+    "DateOfBirth": "1962-11-25",
+    "Gender": "Other",
+    "CountryId": "08852737-942a-48e2-8622-6654af313a09",
+    "Address": "913 Main St, Cityville",
+    "ReceiveNewsLetters": true
+  },
+  {
+    "PersonId": "cd6f6dfa-71cf-4f74-ab7d-5359ac17bbea",
+    "PersonName": "Bob Smith",
+    "Email": "bob.smith@example.com",
+    "DateOfBirth": "2004-03-05",
+    "Gender": "Male",
+    "CountryId": "9a1f995b-fbab-4612-9e9c-358048815dba",
+    "Address": "332 Main St, Cityville",
+    "ReceiveNewsLetters": true
+  },
+  {
+    "PersonId": "210780c5-945e-4a1c-9287-f5dee8e67e53",
+    "PersonName": "Carlos Rivera",
+    "Email": "carlos.rivera@example.com",
+    "DateOfBirth": "2005-08-29",
+    "Gender": "Female",
+    "CountryId": "5ca1618f-97c6-46b0-8a72-6c312a339954",
+    "Address": "688 Main St, Cityville",
+    "ReceiveNewsLetters": true
+  }
+]
