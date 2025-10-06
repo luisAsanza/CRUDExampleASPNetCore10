@@ -53,7 +53,8 @@ namespace ServiceContracts.DTO
                 CountryId = person.CountryId,
                 Address = person.Address,
                 ReceiveNewsLetters = person.ReceiveNewsLetters,
-                Age = person.DateOfBirth == null ? null : CalculateAge(person.DateOfBirth.Value)
+                Age = person.DateOfBirth == null ? null : CalculateAge(person.DateOfBirth.Value),
+                Country = person.Country?.CountryName
             };
         }
 

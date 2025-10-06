@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO;
 
@@ -13,7 +14,7 @@ namespace Services
             _dbContext = dbContext;
         }
 
-        public CountryResponse AddCountry(CountryAddRequest? countryAddRequest)
+        public async Task<CountryResponse> AddCountry(CountryAddRequest? countryAddRequest)
         {
             if (countryAddRequest == null)
                 throw new ArgumentNullException(nameof(countryAddRequest));
@@ -21,7 +22,7 @@ namespace Services
             if (countryAddRequest.CountryName == null)
                 throw new ArgumentException(nameof(countryAddRequest.CountryName));
 
-            if (_dbContext.Countries.Any(c => c.CountryName == countryAddRequest.CountryName))
+            if (await _dbContext.Countries.AnyAsync(c => c.CountryName == countryAddRequest.CountryName))
                 throw new ArgumentException(nameof(countryAddRequest.CountryName));
 
             Country country = countryAddRequest.ToCountry();
@@ -29,22 +30,22 @@ namespace Services
             country.CountryId = Guid.NewGuid();
 
             _dbContext.Countries.Add(country);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return country.ToCountryResponse();
         }
 
-        public List<CountryResponse> GetAllCountries()
+        public Task<List<CountryResponse>> GetAllCountries()
         {
-            var countryResponseList = _dbContext.Countries.Select(c => c.ToCountryResponse()).ToList();
+            var countryResponseList = _dbContext.Countries.Select(c => c.ToCountryResponse()).ToListAsync();
             return countryResponseList;
         }
 
-        public CountryResponse? GetCountry(Guid? countryId)
+        public async Task<CountryResponse?> GetCountry(Guid? countryId)
         {
             if (countryId == null) return null;
 
-            Country? country = _dbContext.Countries.FirstOrDefault(c => c.CountryId == countryId);
+            Country? country = await _dbContext.Countries.FirstOrDefaultAsync(c => c.CountryId == countryId);
 
             if (country == null) return null;
 

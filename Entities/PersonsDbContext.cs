@@ -20,7 +20,11 @@ namespace Entities
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Country>().ToTable("Countries");
-            modelBuilder.Entity<Person>().ToTable("Persons");
+
+            modelBuilder.Entity<Person>().ToTable("Persons", t =>
+            {
+                t.HasCheckConstraint("CHK_TIN", "len([TaxIdentificationNumber]) = 8");
+            });
 
             //Seed Country data
             string countriesJson = System.IO.File.ReadAllText("CountriesSeedData.json");
@@ -39,6 +43,20 @@ namespace Entities
             {
                 modelBuilder.Entity<Person>().HasData(person);
             }
+
+            //Fluent API
+            modelBuilder.Entity<Person>().Property(t => t.TIN)
+                .HasColumnName("TaxIdentificationNumber")
+                .HasColumnType("varchar(8)")
+                .HasDefaultValue("ABC12345");
+
+            //modelBuilder.Entity<Person>().HasIndex(t => t.TIN).IsUnique();
+
+            //Table Relationships
+            modelBuilder.Entity<Person>()
+                .HasOne<Country>(p => p.Country)
+                .WithMany(t => t.Persons)
+                .HasForeignKey(u => u.CountryId);
         }
 
         public IQueryable<Person> sp_GetAllPersons()
