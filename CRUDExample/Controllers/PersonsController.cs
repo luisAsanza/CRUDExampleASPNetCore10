@@ -3,6 +3,7 @@ using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Rotativa.AspNetCore;
 
 namespace CRUDExample.Controllers
 {
@@ -11,11 +12,14 @@ namespace CRUDExample.Controllers
     {
         private readonly IPersonService _personService;
         private readonly ICountriesService _countriesService;
+        private readonly IConfiguration _configuration;
 
-        public PersonsController(IPersonService personService, ICountriesService countriesService)
+        public PersonsController(IPersonService personService, 
+            ICountriesService countriesService, IConfiguration configuration)
         {
             _personService = personService;
             _countriesService = countriesService;
+            _configuration = configuration;
         }
 
         [Route("index")]
@@ -163,6 +167,44 @@ namespace CRUDExample.Controllers
             return RedirectToAction("Index");
         }
 
+        [Route("[action]")]
+        public async Task<IActionResult> PersonsPDF()
+        {
+            var persons = await _personService.GetAllPersons();
+
+            return new ViewAsPdf(persons)
+            {
+                PageMargins = new Rotativa.AspNetCore.Options.Margins()
+                {
+                    Top = 20,
+                    Bottom = 20,
+                    Right = 20,
+                    Left = 20
+                },
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
+            };
+        }
+
+        [Route("[action]")]
+        public async Task<IActionResult> PersonsCSV()
+        {
+            MemoryStream memoryStream = await _personService.GetPersonsCSVConfiguration();
+
+            //Use application/octet-stream when we want browser to download the file
+            //return File(memoryStream, "application/octet-stream", "Persons.csv");
+
+            //Use text/csv to be more specific, sometimes the browser will try to open it in Excel
+            //but most of the time will be downloaded
+            return File(memoryStream, "text/csv", "Persons.csv");
+        }
+
+        [Route("[action]")]
+        public async Task<IActionResult> PersonsExcel()
+        {
+            MemoryStream memoryStream = await _personService.GetPersonsExcel();
+            return File(memoryStream, "application/vnd.openxmlformats-officedocument", "Persons.xlsx");
+        }
+
         #region Private Methods
 
         private static PersonUpdateRequest PersonResponseToPersonUpdateRequest(PersonResponse personResponse)
@@ -181,7 +223,6 @@ namespace CRUDExample.Controllers
         }
 
         #endregion
-
-        
+                
     }
 }

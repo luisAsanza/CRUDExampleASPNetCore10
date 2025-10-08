@@ -1,0 +1,46 @@
+﻿@model List<PersonResponse>
+@{
+	Layout = null;
+}
+<link href="@(Context.Request.Scheme)://@(Context.Request.Host)/StyleSheet.css" )" rel="stylesheet" />
+<h1>Persons</h1>
+<table class="table w-100 mt">
+	<colgroup>
+		<col style="width:15%">  <!-- Person Name -->
+		<col style="width:20%">  <!-- Email -->
+		<col style="width:12%">  <!-- Date Of Birth -->
+		<col style="width:6%">   <!-- Age -->
+		<col style="width:8%">   <!-- Gender -->
+		<col style="width:10%">  <!-- Country -->
+		<col style="width:18%">  <!-- Address -->
+		<col style="width:11%">   <!-- Receive News Letter -->
+		<col style="width:20%">   <!-- Receive News Letter -->
+	</colgroup>
+	<thead>
+		<tr>
+			<th>PersonName</th>
+			<th>Email</th>
+			<th>DateOfBirth</th>
+			<th>Age</th>
+			<th>Gender</th>
+			<th>Country</th>
+			<th>Address</th>
+			<th>ReceiveNewsLetter</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (PersonResponse person in Model)
+		{
+			<tr>
+				<td>@person.PersonName</td>
+				<td>@person.Email</td>
+				<td>@person.DateOfBirth?.ToString("dd MM yyyy")</td>
+				<td>@person.Age</td>
+				<td>@person.Gender</td>
+				<td>@person.Country</td>
+				<td>@person.Address</td>
+				<td>@person.ReceiveNewsLetters</td>
+			</tr>
+		}
+	</tbody>
+</table>

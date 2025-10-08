@@ -1,5 +1,9 @@
-﻿using Entities;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using OfficeOpenXml;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
@@ -222,6 +226,99 @@ namespace Services
             await _dbContext.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<MemoryStream> GetPersonsCSV()
+        {
+            MemoryStream memoryStream = new MemoryStream();
+            using StreamWriter streamWriter = new StreamWriter(memoryStream, leaveOpen: true);
+            using CsvWriter csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
+            {
+                csvWriter.WriteHeader<PersonResponse>();
+                await csvWriter.NextRecordAsync();
+
+                var persons = await GetAllPersons();
+                await csvWriter.WriteRecordsAsync(persons);
+
+                await streamWriter.FlushAsync();
+            }
+
+            memoryStream.Position = 0;
+
+            return memoryStream;
+        }
+
+        public async Task<MemoryStream> GetPersonsCSVConfiguration()
+        {
+            CsvConfiguration configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ",",
+                HasHeaderRecord = true,
+                NewLine = Environment.NewLine
+            };
+            MemoryStream memoryStream = new MemoryStream();
+            var persons = await GetAllPersons();
+            using StreamWriter streamWriter = new StreamWriter(memoryStream, leaveOpen: true);
+            using CsvWriter csvWriter = new CsvWriter(streamWriter, configuration);
+            {
+                //csvWriter.WriteHeader<PersonResponse>();
+                //PersonName, Email, DateOfBirth, Country
+                csvWriter.WriteField(nameof(PersonResponse.PersonName));
+                csvWriter.WriteField(nameof(PersonResponse.Email));
+                csvWriter.WriteField(nameof(PersonResponse.DateOfBirth));
+                csvWriter.WriteField(nameof(PersonResponse.Country));
+
+                await csvWriter.NextRecordAsync();                
+
+                foreach (var person in persons)
+                {
+                    csvWriter.WriteField(person.PersonName);
+                    csvWriter.WriteField(person.Email);
+                    csvWriter.WriteField(person.DateOfBirth.HasValue ? person.DateOfBirth.Value.ToString("dd MM yyyy") : string.Empty);
+                    csvWriter.WriteField(person.Country);
+                    await csvWriter.NextRecordAsync();
+                }
+
+                //await csvWriter.WriteRecordsAsync(persons);
+
+                await streamWriter.FlushAsync();
+            }
+
+            memoryStream.Position = 0;
+
+            return memoryStream;
+        }
+
+        public async Task<MemoryStream> GetPersonsExcel()
+        {
+            MemoryStream memoryStream = new MemoryStream();
+            using (ExcelPackage excelPackage = new ExcelPackage(memoryStream))
+            {
+                ExcelWorksheet workSheet = excelPackage.Workbook.Worksheets.Add("Persons");
+                workSheet.Cells["A1"].Value = "Person Name";
+                workSheet.Cells["B1"].Value = "Email";
+                workSheet.Cells["C1"].Value = "Date Of Birth";
+                workSheet.Cells["D1"].Value = "Country";
+
+                var persons = await GetAllPersons();
+                int row = 2;
+
+                foreach (var person in persons)
+                {
+                    workSheet.Cells[row, 1].Value = person.PersonName;
+                    workSheet.Cells[row, 2].Value = person.Email;
+                    workSheet.Cells[row, 3].Value = person.DateOfBirth.HasValue ? person.DateOfBirth.Value.ToString("dd MM yyyy") : string.Empty;
+                    workSheet.Cells[row, 4].Value = person.Country;
+
+                    row++;
+                }
+
+                workSheet.Cells.AutoFitColumns();
+                await excelPackage.SaveAsync();
+            }
+
+            memoryStream.Position = 0;
+            return memoryStream;
         }
     }
 }

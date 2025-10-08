@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using ServiceContracts;
 using Services;
 
@@ -12,6 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ICountriesService, CountriesService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 
+
 //DB
 builder.Services.AddDbContext<Entities.PersonsDbContext>(options =>
 {
@@ -23,5 +25,6 @@ var app = builder.Build();
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
+app.UseRotativa();
 
 app.Run();
