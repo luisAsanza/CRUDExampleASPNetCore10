@@ -1,5 +1,7 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using ServiceContracts;
 using ServiceContracts.DTO;
 
@@ -50,6 +52,46 @@ namespace Services
             if (country == null) return null;
 
             return country.ToCountryResponse();
+        }
+
+        public async Task<int> UploadCountriesFromExcelFile(IFormFile formFile)
+        {
+            if(formFile == null || formFile.Length == 0 || !formFile.FileName.EndsWith(".xlsx"))
+            {
+                throw new ArgumentException("Invalid file");
+            }
+
+            await using MemoryStream memoryStream = new MemoryStream();
+            await formFile.CopyToAsync(memoryStream);
+
+            using (ExcelPackage excelPackage = new ExcelPackage(memoryStream))
+            {
+                var worksheet = excelPackage.Workbook.Worksheets.FirstOrDefault();
+                if(worksheet == null) return 0;
+                var rowCount = worksheet.Dimension.Rows;
+                const int headerRow = 1;
+                var validCountries = new List<Country>();
+
+                for (var row = headerRow + 1; row<=rowCount; row++)
+                {
+                    var cellValue = worksheet.Cells[row, 1].Value?.ToString();
+
+                    //Add validated country to the list
+                    if (!string.IsNullOrWhiteSpace(cellValue) 
+                        && !await _dbContext.Countries.AnyAsync(c => c.CountryName == cellValue))
+                    {
+                        validCountries.Add(new Country()
+                        {
+                            CountryId = Guid.NewGuid(),
+                            CountryName = cellValue
+                        });
+                    }
+                }
+
+                _dbContext.AddRange(validCountries);
+                await _dbContext.SaveChangesAsync();
+                return validCountries.Count();
+            }
         }
     }
 }
