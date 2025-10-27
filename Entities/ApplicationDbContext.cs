@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Entities
 {
-    public class PersonsDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<Person> Persons { get; set; }
         public DbSet<Country> Countries { get; set; }
 
-        public PersonsDbContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             
         }
@@ -19,7 +19,7 @@ namespace Entities
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Country>().ToTable("Countries");
+            modelBuilder.Entity<Country>().ToTable("Countries").HasKey(t => t.CountryId);
 
             modelBuilder.Entity<Person>().ToTable("Persons", t =>
             {

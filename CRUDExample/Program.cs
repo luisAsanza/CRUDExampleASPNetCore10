@@ -1,3 +1,4 @@
+using Entities;
 using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
 using ServiceContracts;
@@ -15,7 +16,7 @@ builder.Services.AddScoped<IPersonService, PersonService>();
 
 
 //DB
-builder.Services.AddDbContext<Entities.PersonsDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });

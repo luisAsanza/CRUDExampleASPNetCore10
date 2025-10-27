@@ -4,6 +4,7 @@ using ServiceContracts;
 using ServiceContracts.DTO;
 using Services;
 using Xunit.Abstractions;
+using Moq;
 
 namespace CRUDTests
 {
@@ -14,7 +15,8 @@ namespace CRUDTests
 
         public CountriesServiceTest(ITestOutputHelper testOutputHelper)
         {
-            _countryService = new CountriesService(new PersonsDbContext(new DbContextOptionsBuilder<PersonsDbContext>().Options));
+            var dbContext = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().Options);
+            _countryService = new CountriesService(dbContext);
             _testOutputHelper = testOutputHelper;
         }
 
