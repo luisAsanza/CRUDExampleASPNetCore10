@@ -15,7 +15,11 @@ namespace CRUDTests
 
         public CountriesServiceTest(ITestOutputHelper testOutputHelper)
         {
-            var dbContext = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>().Options);
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString()) // Use a unique in-memory database for each test
+                .Options;
+
+            var dbContext = new ApplicationDbContext(options);
             _countryService = new CountriesService(dbContext);
             _testOutputHelper = testOutputHelper;
         }

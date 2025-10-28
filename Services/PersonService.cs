@@ -187,7 +187,7 @@ namespace Services
             return Task.FromResult<List<PersonResponse>>(sortedPersons);
         }
 
-        public async Task<PersonResponse> UpdateResponse(PersonUpdateRequest? personUpdateRequest)
+        public async Task<PersonResponse> UpdatePerson(PersonUpdateRequest? personUpdateRequest)
         {
             if (personUpdateRequest == null)
                 throw new ArgumentNullException(nameof(personUpdateRequest));

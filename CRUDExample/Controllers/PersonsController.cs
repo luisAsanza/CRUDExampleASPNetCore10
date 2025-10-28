@@ -134,7 +134,7 @@ namespace CRUDExample.Controllers
                 return View(request);
             }
 
-            await _personService.UpdateResponse(request);
+            await _personService.UpdatePerson(request);
 
             return RedirectToAction("Index");
         }
