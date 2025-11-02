@@ -14,6 +14,7 @@ namespace ServiceContracts.DTO
         public string? Address { get; set; }
         public bool ReceiveNewsLetters { get; set; }
         public int? Age { get; set; }
+        public string? TIN { get; set; }
 
         public override bool Equals(object? obj)
         {
@@ -54,7 +55,8 @@ namespace ServiceContracts.DTO
                 Address = person.Address,
                 ReceiveNewsLetters = person.ReceiveNewsLetters,
                 Age = person.DateOfBirth == null ? null : CalculateAge(person.DateOfBirth.Value),
-                Country = person.Country?.CountryName
+                Country = person.Country?.CountryName,
+                TIN = person.TIN
             };
         }
 

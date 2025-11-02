@@ -1,5 +1,7 @@
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Repositories;
+using RepositoryContracts;
 using Rotativa.AspNetCore;
 using ServiceContracts;
 using Services;
@@ -11,9 +13,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 //Add services for Controllers
 builder.Services.AddControllersWithViews();
 //Add other services
+builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
+builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();
 builder.Services.AddScoped<ICountriesService, CountriesService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
-
 
 //DB
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
