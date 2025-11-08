@@ -9,7 +9,7 @@ using Services;
 using System.Linq.Expressions;
 using Xunit.Abstractions;
 
-namespace CRUDTests
+namespace CRUDTests.Services
 {
     public class CountriesServiceTest
     {

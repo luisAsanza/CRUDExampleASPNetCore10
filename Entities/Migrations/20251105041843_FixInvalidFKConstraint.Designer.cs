@@ -4,6 +4,7 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class PersonsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251105041843_FixInvalidFKConstraint")]
+    partial class FixInvalidFKConstraint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,6 +37,23 @@ namespace Entities.Migrations
                     b.HasKey("CountryId");
 
                     b.ToTable("Countries", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            CountryId = new Guid("ef684ba0-0ad5-41d1-8223-4122c149f9da"),
+                            CountryName = "Argentina"
+                        },
+                        new
+                        {
+                            CountryId = new Guid("ad914740-7d42-4374-83a0-6b939e2f1f05"),
+                            CountryName = "Brazil"
+                        },
+                        new
+                        {
+                            CountryId = new Guid("08852737-942a-48e2-8622-6654af313a09"),
+                            CountryName = "China"
+                        });
                 });
 
             modelBuilder.Entity("Entities.Person", b =>
@@ -80,6 +100,41 @@ namespace Entities.Migrations
                     b.ToTable("Persons", null, t =>
                         {
                             t.HasCheckConstraint("CHK_TIN", "len([TaxIdentificationNumber]) = 8");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            PersonId = new Guid("9403db58-adc5-494b-a455-b075aa7cfc46"),
+                            Address = "913 Main St, Cityville",
+                            CountryId = new Guid("08852737-942a-48e2-8622-6654af313a09"),
+                            DateOfBirth = new DateOnly(1962, 11, 25),
+                            Email = "alice.johnson@example.com",
+                            Gender = "Other",
+                            PersonName = "Alice Johnson",
+                            ReceiveNewsLetters = true
+                        },
+                        new
+                        {
+                            PersonId = new Guid("cd6f6dfa-71cf-4f74-ab7d-5359ac17bbea"),
+                            Address = "332 Main St, Cityville",
+                            CountryId = new Guid("ad914740-7d42-4374-83a0-6b939e2f1f05"),
+                            DateOfBirth = new DateOnly(2004, 3, 5),
+                            Email = "bob.smith@example.com",
+                            Gender = "Male",
+                            PersonName = "Bob Smith",
+                            ReceiveNewsLetters = true
+                        },
+                        new
+                        {
+                            PersonId = new Guid("210780c5-945e-4a1c-9287-f5dee8e67e53"),
+                            Address = "688 Main St, Cityville",
+                            CountryId = new Guid("ad914740-7d42-4374-83a0-6b939e2f1f05"),
+                            DateOfBirth = new DateOnly(2005, 8, 29),
+                            Email = "carlos.rivera@example.com",
+                            Gender = "Female",
+                            PersonName = "Carlos Rivera",
+                            ReceiveNewsLetters = true
                         });
                 });
 

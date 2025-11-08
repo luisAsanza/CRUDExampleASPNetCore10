@@ -11,7 +11,7 @@ using Moq;
 using RepositoryContracts;
 using System.Linq.Expressions;
 
-namespace CRUDTests
+namespace CRUDTests.Services
 {
     public class PersonsServiceTest
     {

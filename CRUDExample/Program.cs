@@ -32,3 +32,5 @@ app.MapControllers();
 app.UseRotativa();
 
 app.Run();
+
+public partial class Program { } //Make the Program class public for integration testing
