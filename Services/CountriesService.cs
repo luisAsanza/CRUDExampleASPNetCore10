@@ -10,10 +10,13 @@ namespace Services
     public class CountriesService : ICountriesService
     {
         private readonly ICountriesRepository _countriesRepository;
+        private readonly ICacheService _cacheService;
+        private const string COUNTRIES_CACHE_KEY = "countries_all";
 
-        public CountriesService(ICountriesRepository countriesRepository)
+        public CountriesService(ICountriesRepository countriesRepository, ICacheService cacheService)
         {
             _countriesRepository = countriesRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<CountryResponse> AddCountry(CountryAddRequest? countryAddRequest)
@@ -33,13 +36,27 @@ namespace Services
 
             await _countriesRepository.AddAsync(country);
 
+            // Invalidate cache when new country is added
+            _cacheService.Remove(COUNTRIES_CACHE_KEY);
+
             return country.ToCountryResponse();
         }
 
         public async Task<List<CountryResponse>> GetAllCountries()
         {
+            // Try to get from cache first
+            if (_cacheService.TryGetValue(COUNTRIES_CACHE_KEY, out List<CountryResponse>? cachedCountries))
+            {
+                return cachedCountries!;
+            }
+
+            // If not in cache, fetch from repository
             var countries = await _countriesRepository.GetAllAsync();
             var countryResponseList = countries.Select(c => c.ToCountryResponse()).ToList();
+
+            // Store in cache for 30 minutes
+            _cacheService.Set(COUNTRIES_CACHE_KEY, countryResponseList, absoluteExpirationMinutes: 30);
+
             return countryResponseList;
         }
 
@@ -89,6 +106,10 @@ namespace Services
                 }
 
                 await _countriesRepository.AddRangeAsync(validCountries);
+
+                // Invalidate cache when countries are uploaded
+                _cacheService.Remove(COUNTRIES_CACHE_KEY);
+
                 return validCountries.Count();
             }
         }

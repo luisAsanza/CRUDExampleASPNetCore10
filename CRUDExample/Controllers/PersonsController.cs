@@ -13,13 +13,16 @@ namespace CRUDExample.Controllers
         private readonly IPersonService _personService;
         private readonly ICountriesService _countriesService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<PersonsController> _logger;
 
         public PersonsController(IPersonService personService, 
-            ICountriesService countriesService, IConfiguration configuration)
+            ICountriesService countriesService, IConfiguration configuration,
+            ILogger<PersonsController> logger)
         {
             _personService = personService;
             _countriesService = countriesService;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [Route("index")]
@@ -27,6 +30,9 @@ namespace CRUDExample.Controllers
         public async Task<IActionResult> Index(PersonSearchOptions searchBy, string? search,
             PersonSearchOptions? sortBy, SortOrderOptions sortOrder)
         {
+            _logger.LogInformation("Index Action method of PersonsController");
+            _logger.LogDebug($"searchBy: {searchBy}, search: {search}");
+
             ViewBag.SearchFields = new Dictionary<PersonSearchOptions, string>()
             {
                 { PersonSearchOptions.PersonName, "Person Name" },
@@ -115,6 +121,7 @@ namespace CRUDExample.Controllers
 
         [HttpPost]
         [Route("[action]/{personId}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PersonUpdateRequest request)
         {
             PersonResponse? personResponse = await _personService.GetPerson(request.PersonId);

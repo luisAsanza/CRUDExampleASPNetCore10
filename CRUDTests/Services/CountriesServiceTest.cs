@@ -16,12 +16,14 @@ namespace CRUDTests.Services
         private readonly ICountriesService _countryService;
         private readonly ITestOutputHelper _testOutputHelper;
         private readonly Mock<ICountriesRepository> _countriesRepositoryMock;
+        private readonly Mock<ICacheService> _cacheServiceMock;
         private readonly IFixture _fixture;
 
         public CountriesServiceTest(ITestOutputHelper testOutputHelper)
         {
             _countriesRepositoryMock = new Mock<ICountriesRepository>();
-            _countryService = new CountriesService(_countriesRepositoryMock.Object);
+            _cacheServiceMock = new Mock<ICacheService>();
+            _countryService = new CountriesService(_countriesRepositoryMock.Object, _cacheServiceMock.Object);
             _testOutputHelper = testOutputHelper;
             _fixture = new Fixture();
             _fixture.Customize<DateOnly>(c => c.FromFactory(() => DateOnly.FromDateTime(_fixture.Create<DateTime>())));
@@ -126,6 +128,9 @@ namespace CRUDTests.Services
             var countries = new List<Country>();
             _countriesRepositoryMock.Setup(r => r.GetAllAsync())
                 .ReturnsAsync(countries);
+            // Setup cache to return false (cache miss)
+            _cacheServiceMock.Setup(c => c.TryGetValue(It.IsAny<string>(), out It.Ref<List<CountryResponse>?>.IsAny))
+                .Returns(false);
 
             //Act
             var actual = await _countryService.GetAllCountries();
@@ -147,6 +152,9 @@ namespace CRUDTests.Services
                 .ToList();
             _countriesRepositoryMock.Setup(r => r.GetAllAsync())
                 .ReturnsAsync(countries);
+            // Setup cache to return false (cache miss)
+            _cacheServiceMock.Setup(c => c.TryGetValue(It.IsAny<string>(), out It.Ref<List<CountryResponse>?>.IsAny))
+                .Returns(false);
 
             //Act
             var actual = await _countryService.GetAllCountries();

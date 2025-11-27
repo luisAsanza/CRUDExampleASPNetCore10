@@ -45,7 +45,7 @@ namespace Repositories
 
         public Task AddRangeAsync(IEnumerable<Country> countries)
         {
-            _db.Countries.AddRange();
+            _db.Countries.AddRange(countries);
             return _db.SaveChangesAsync();
         }
     }

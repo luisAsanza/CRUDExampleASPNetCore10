@@ -1,8 +1,10 @@
-﻿using CsvHelper;
+﻿using Castle.Core.Logging;
+using CsvHelper;
 using CsvHelper.Configuration;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using RepositoryContracts;
 using ServiceContracts;
@@ -17,10 +19,12 @@ namespace Services
     public class PersonService : IPersonService
     {
         private readonly IPersonsRepository _personsRepository;
+        private readonly ILogger<PersonService> _logger;
 
-        public PersonService(IPersonsRepository personsRepository)
+        public PersonService(IPersonsRepository personsRepository, ILogger<PersonService> logger)
         {
             _personsRepository = personsRepository;
+            _logger = logger;
         }
 
         public async Task<PersonResponse> AddPerson(PersonAddRequest request)
@@ -46,6 +50,8 @@ namespace Services
 
         public async Task<List<PersonResponse>> GetAllPersons()
         {
+            _logger.LogInformation("GetAllPersons of PersonService");
+
             var allPersons = await _personsRepository.GetAllAsync();
             return allPersons.Select(person => person.ToPersonResponse()).ToList();
         }
@@ -65,6 +71,8 @@ namespace Services
 
         public async Task<List<PersonResponse>> GetFilteredPersons(PersonSearchOptions searchBy, string? searchString)
         {
+            _logger.LogInformation("GetFilteredPersons of PersonService");
+
             if(string.IsNullOrWhiteSpace(searchString))
                 return (await _personsRepository.GetAllAsync()).Select(p => p.ToPersonResponse()).ToList();
 
@@ -115,6 +123,8 @@ namespace Services
 
         public Task<List<PersonResponse>> GetSortedPersons(List<PersonResponse> allPersons, PersonSearchOptions? sortBy, SortOrderOptions sortOrder)
         {
+            _logger.LogInformation("GetSortedPersons of PersonService");
+
             if (sortBy == null)
                 return Task.FromResult<List<PersonResponse>>(allPersons);
 

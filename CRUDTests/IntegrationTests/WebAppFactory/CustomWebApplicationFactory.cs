@@ -11,11 +11,18 @@ namespace CRUDTests.IntegrationTests.WebAppFactory
 {
     public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
-        //Create a unique DB name so tests don't leak data across runs
-        private readonly string _dbName = $"PersonsDbForTesting_{Guid.NewGuid()}";
+        //Create a unique DB name so tests don't leak data across runs (This applies for InMemory DB)
+        //private readonly string _dbName = $"PersonsDbForTesting_{Guid.NewGuid()}";
 
+        //Hardcoded CountryIds from SeedPersonsDbForTestingAsync
         private static readonly Guid _countryId1 = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
         private static readonly Guid _countryId2 = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+
+        //Hardcode PersonIds from SeedPersonsDbForTestingAsync
+        private static readonly Guid _personId1 = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        private static readonly Guid _personId2 = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        private static readonly Guid _personId3 = Guid.Parse("33333333-3333-3333-3333-333333333333");
+
         private const string _testingEnv = "Testing";
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -108,6 +115,7 @@ namespace CRUDTests.IntegrationTests.WebAppFactory
                 db.Persons.AddRange(
                     new Person
                     {
+                        PersonId = _personId1,
                         PersonName = "Alicia",
                         Email = "alicia@test.com",
                         CountryId = _countryId1,
@@ -119,6 +127,7 @@ namespace CRUDTests.IntegrationTests.WebAppFactory
                     },
                     new Person
                     {
+                        PersonId = _personId2,
                         PersonName = "Carlos",
                         Email = "carlos@test.com",
                         CountryId = _countryId1,
@@ -130,6 +139,7 @@ namespace CRUDTests.IntegrationTests.WebAppFactory
                     },
                     new Person
                     {
+                        PersonId = _personId3,
                         PersonName = "Luis",
                         Email = "luis@test.com",
                         CountryId = _countryId2,

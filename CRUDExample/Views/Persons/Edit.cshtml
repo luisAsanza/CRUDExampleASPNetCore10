@@ -10,7 +10,7 @@
 <h2>Edit Person</h2>
 
 <div class="w-50">
-	<form asp-controller="Persons" asp-action="Edit" method="post">
+	<form id="EditPersonForm" asp-controller="Persons" asp-action="Edit" method="post">
 		@*Hidden*@
 		<input type="hidden" asp-for="PersonId" />
 
@@ -111,7 +111,7 @@
 			<div class="w-25">
 			</div>
 			<div class="flex-1">
-				<button class="button button-green-back">Update</button>
+				<button id="UpdatePersonBtn" class="button button-green-back">Update</button>
 				<div asp-validation-summary="All"></div>
 				@if (ViewBag.Errors != null)
 				{
