@@ -13,6 +13,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 //Logging
+builder.Services.AddHttpLogging();
 builder.Logging.ClearProviders().AddConsole().AddDebug();
 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 {
@@ -67,11 +68,13 @@ else if (app.Environment.IsProduction())
     app.UseCsp();
 }
 
-app.Logger.LogDebug("debug-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-app.Logger.LogInformation("information-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-app.Logger.LogWarning("warning-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-app.Logger.LogError("error-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-app.Logger.LogCritical("critical-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+app.UseHttpLogging();
+
+//app.Logger.LogDebug("debug-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+//app.Logger.LogInformation("information-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+//app.Logger.LogWarning("warning-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+//app.Logger.LogError("error-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+//app.Logger.LogCritical("critical-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
 app.UseStaticFiles();
 app.UseRouting();
