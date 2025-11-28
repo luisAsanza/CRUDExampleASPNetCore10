@@ -6,19 +6,46 @@ using RepositoryContracts;
 using Rotativa.AspNetCore;
 using ServiceContracts;
 using Services;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Logging
-builder.Services.AddHttpLogging();
-builder.Logging.ClearProviders().AddConsole().AddDebug();
-if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+//Overwrite HttpLogging
+builder.Services.AddHttpLogging(options =>
 {
-    builder.Logging.AddEventLog();
-}
+    options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestMethod |
+                            Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPath |
+                            Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestQuery;
+                            //Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestHeaders |
+                            //Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponseStatusCode |
+                            //Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponseHeaders;
+});
+
+//Select built-in Logging Providers (Commented out to use Serilog instead)
+//builder.Logging.ClearProviders().AddConsole().AddDebug();
+//if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+//{
+//    builder.Logging.AddEventLog();
+//}
+
+//Instead of selecting built-in Logging Providers, you can also use third-party logging providers such as Serilog, NLog, etc.
+builder.Host.UseSerilog((context, sp, loggerConfiguration) => {
+    loggerConfiguration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(sp);
+
+    //if(context.HostingEnvironment.IsDevelopment())
+    //{
+    //    loggerConfiguration.WriteTo.Console();
+    //    loggerConfiguration.WriteTo.Debug();
+    //}
+    //else
+    //{
+    //    //This does not overwrite the sinks defined in appsettings.json, it just adds another sink
+    //    loggerConfiguration.WriteTo.MSSqlServer(context.Configuration.GetConnectionString("LoggingDb"));
+    //}
+});
 
 //Connection string
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -50,6 +77,8 @@ builder.Services.AddRouting(options =>
 
 var app = builder.Build();
 
+app.Logger.LogDebug("Adding Csp configuration");
+
 //Add csp to responses
 if (app.Environment.IsDevelopment())
 {
@@ -68,14 +97,9 @@ else if (app.Environment.IsProduction())
     app.UseCsp();
 }
 
+app.Logger.LogDebug("End of Csp configuration");
+
 app.UseHttpLogging();
-
-//app.Logger.LogDebug("debug-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-//app.Logger.LogInformation("information-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-//app.Logger.LogWarning("warning-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-//app.Logger.LogError("error-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-//app.Logger.LogCritical("critical-message xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
