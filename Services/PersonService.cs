@@ -1,9 +1,6 @@
-﻿using Castle.Core.Logging;
-using CsvHelper;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using RepositoryContracts;
