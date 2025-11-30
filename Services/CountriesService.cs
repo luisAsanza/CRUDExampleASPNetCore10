@@ -1,5 +1,7 @@
-﻿using Entities;
+﻿using Castle.Core.Logging;
+using Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using RepositoryContracts;
 using ServiceContracts;
@@ -12,11 +14,14 @@ namespace Services
         private readonly ICountriesRepository _countriesRepository;
         private readonly ICacheService _cacheService;
         private const string COUNTRIES_CACHE_KEY = "countries_all";
+        private readonly ILogger<CountriesService> _logger;
 
-        public CountriesService(ICountriesRepository countriesRepository, ICacheService cacheService)
+        public CountriesService(ICountriesRepository countriesRepository, 
+            ICacheService cacheService, ILogger<CountriesService> logger)
         {
             _countriesRepository = countriesRepository;
             _cacheService = cacheService;
+            _logger = logger;
         }
 
         public async Task<CountryResponse> AddCountry(CountryAddRequest? countryAddRequest)

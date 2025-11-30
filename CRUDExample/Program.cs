@@ -7,20 +7,22 @@ using Rotativa.AspNetCore;
 using ServiceContracts;
 using Services;
 using Serilog;
+using Serilog.Context;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Overwrite HttpLogging
-builder.Services.AddHttpLogging(options =>
-{
-    options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestMethod |
-                            Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPath |
-                            Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestQuery;
-                            //Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestHeaders |
-                            //Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponseStatusCode |
-                            //Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponseHeaders;
-});
+// app.UseHttpLogging(); logs every http request. With AddHttpLogging I can overwrite what information
+// of the HttpRequest is logged.
+//builder.Services.AddHttpLogging(options =>
+//{
+//    options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestMethod |
+//                            Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestPath |
+//                            Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestQuery;
+//                            //Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestHeaders |
+//                            //Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponseStatusCode |
+//                            //Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponseHeaders;
+//});
 
 //Select built-in Logging Providers (Commented out to use Serilog instead)
 //builder.Logging.ClearProviders().AddConsole().AddDebug();
@@ -75,7 +77,24 @@ builder.Services.AddRouting(options =>
     options.LowercaseUrls = true;
 });
 
+
 var app = builder.Build();
+
+app.Use(async (ctx, next) =>
+{
+    var isAuthenticated = ctx.User.Identity?.IsAuthenticated == true;
+    var userName = isAuthenticated ? ctx.User.Identity?.Name : "Anonymous";
+    using var _ = LogContext.PushProperty("UserName", userName);
+
+    await next();
+});
+
+// Log every http request. I'm commented out this line to use Serilog request logging instead.
+//app.UseHttpLogging();
+
+// Log every request using Serilog. app.UseHttpLogging(); can be removed so it won't generate http requests logs twice
+app.UseSerilogRequestLogging();
+
 
 app.Logger.LogDebug("Adding Csp configuration");
 
@@ -99,7 +118,6 @@ else if (app.Environment.IsProduction())
 
 app.Logger.LogDebug("End of Csp configuration");
 
-app.UseHttpLogging();
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
