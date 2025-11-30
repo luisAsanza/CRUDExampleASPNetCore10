@@ -4,6 +4,7 @@ using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rotativa.AspNetCore;
+using Serilog;
 
 namespace CRUDExample.Controllers
 {
@@ -14,15 +15,17 @@ namespace CRUDExample.Controllers
         private readonly ICountriesService _countriesService;
         private readonly IConfiguration _configuration;
         private readonly ILogger<PersonsController> _logger;
+        private readonly IDiagnosticContext _diagnosticContext;
 
         public PersonsController(IPersonService personService, 
             ICountriesService countriesService, IConfiguration configuration,
-            ILogger<PersonsController> logger)
+            ILogger<PersonsController> logger, IDiagnosticContext diagnosticContext)
         {
             _personService = personService;
             _countriesService = countriesService;
             _configuration = configuration;
             _logger = logger;
+            _diagnosticContext = diagnosticContext;
         }
 
         [Route("index")]
@@ -47,6 +50,8 @@ namespace CRUDExample.Controllers
 
             //Get Persons
             List<PersonResponse> persons = await _personService.GetFilteredPersons(searchBy, search);
+            //Enrich Http request with persons data using Serilog
+            _diagnosticContext.Set("Persons", persons);
 
             //Sort List
             persons = await _personService.GetSortedPersons(persons, sortBy, sortOrder);
