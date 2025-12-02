@@ -86,7 +86,8 @@ app.Use(async (ctx, next) =>
 {
     var isAuthenticated = ctx.User.Identity?.IsAuthenticated == true;
     var userName = isAuthenticated ? ctx.User.Identity?.Name : "Anonymous";
-    using var _ = LogContext.PushProperty("UserName", userName);
+    var diagnosticContext = ctx.RequestServices.GetRequiredService<IDiagnosticContext>();
+    diagnosticContext.Set("Username", userName!);
 
     await next();
 });
