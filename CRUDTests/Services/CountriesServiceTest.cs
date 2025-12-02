@@ -8,6 +8,7 @@ using ServiceContracts.DTO;
 using Services;
 using System.Linq.Expressions;
 using Xunit.Abstractions;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CRUDTests.Services
 {
@@ -23,7 +24,8 @@ namespace CRUDTests.Services
         {
             _countriesRepositoryMock = new Mock<ICountriesRepository>();
             _cacheServiceMock = new Mock<ICacheService>();
-            _countryService = new CountriesService(_countriesRepositoryMock.Object, _cacheServiceMock.Object);
+            var logger = NullLogger<CountriesService>.Instance;
+            _countryService = new CountriesService(_countriesRepositoryMock.Object, _cacheServiceMock.Object, logger);
             _testOutputHelper = testOutputHelper;
             _fixture = new Fixture();
             _fixture.Customize<DateOnly>(c => c.FromFactory(() => DateOnly.FromDateTime(_fixture.Create<DateTime>())));
@@ -102,6 +104,7 @@ namespace CRUDTests.Services
                     addedCountry = c;
                 })
                 .ReturnsAsync((Country country) => country);
+            _cacheServiceMock.Setup(c => c.Remove(It.IsAny<string>()));
 
             //Act
             var current = await _countryService.AddCountry(countryAddRequest);
@@ -115,6 +118,7 @@ namespace CRUDTests.Services
             addedCountry.CountryId.Should().NotBe(Guid.Empty);
             _countriesRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Country>()), Times.Once);
             _countriesRepositoryMock.Verify(r => r.AnyAsync(It.IsAny<Expression<Func<Country, bool>>>()), Times.Once);
+            _cacheServiceMock.Verify(c => c.Remove("countries_all"), Times.Once);
         }
 
         #endregion

@@ -8,6 +8,7 @@ using ServiceContracts;
 using Services;
 using Serilog;
 using Serilog.Context;
+using Serilog.Sinks.InMemory;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,19 +35,19 @@ var builder = WebApplication.CreateBuilder(args);
 //Instead of selecting built-in Logging Providers, you can also use third-party logging providers such as Serilog, NLog, etc.
 builder.Host.UseSerilog((context, sp, loggerConfiguration) => {
     loggerConfiguration
-    .ReadFrom.Configuration(context.Configuration)
-    .ReadFrom.Services(sp);
+    .ReadFrom.Services(sp)
+    .Enrich.WithMachineName();
 
-    //if(context.HostingEnvironment.IsDevelopment())
-    //{
-    //    loggerConfiguration.WriteTo.Console();
-    //    loggerConfiguration.WriteTo.Debug();
-    //}
-    //else
-    //{
-    //    //This does not overwrite the sinks defined in appsettings.json, it just adds another sink
-    //    loggerConfiguration.WriteTo.MSSqlServer(context.Configuration.GetConnectionString("LoggingDb"));
-    //}
+    if (context.HostingEnvironment.IsEnvironment("Testing"))
+    {
+        loggerConfiguration.MinimumLevel.Information();
+        loggerConfiguration.MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning);
+        loggerConfiguration.WriteTo.InMemory();
+    }
+    else
+    {
+        loggerConfiguration.ReadFrom.Configuration(context.Configuration);
+    }
 });
 
 //Connection string
@@ -80,6 +81,7 @@ builder.Services.AddRouting(options =>
 
 var app = builder.Build();
 
+// Use Serilog custom middleware to enrich logs with Username
 app.Use(async (ctx, next) =>
 {
     var isAuthenticated = ctx.User.Identity?.IsAuthenticated == true;

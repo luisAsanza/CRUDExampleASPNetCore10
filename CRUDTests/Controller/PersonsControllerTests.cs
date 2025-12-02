@@ -1,8 +1,9 @@
 ﻿using AutoFixture;
 using CRUDExample.Controllers;
+using CRUDTests.TestDoubles;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using ServiceContracts;
 using ServiceContracts.DTO;
@@ -25,10 +26,12 @@ namespace CRUDTests.Controller
             _personsServiceMock = new Mock<IPersonService>();
             _countriesServiceMock = new Mock<ICountriesService>();
             _configurationMock = new Mock<IConfiguration>();
+            
             _controller = new PersonsController(_personsServiceMock.Object,
                 _countriesServiceMock.Object,
-                _configurationMock.Object);
-
+                _configurationMock.Object,
+                NullLogger<PersonsController>.Instance,
+                NullDiagnosticContext.Instance);
         }
 
         [Fact]
