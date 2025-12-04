@@ -10,6 +10,7 @@ using FluentAssertions;
 using Moq;
 using RepositoryContracts;
 using System.Linq.Expressions;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CRUDTests.Services
 {
@@ -24,7 +25,8 @@ namespace CRUDTests.Services
         public PersonsServiceTest(ITestOutputHelper testOutputHelper)
         {
             _personsRepositoryMock = new Mock<IPersonsRepository>();
-            _personService = new PersonService(_personsRepositoryMock.Object);
+            var logger = new NullLogger<PersonService>();
+            _personService = new PersonService(_personsRepositoryMock.Object, logger);
 
             //Create AutoFixture object
             _fixture = new Fixture();
