@@ -5,6 +5,7 @@ using ServiceContracts.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rotativa.AspNetCore;
 using Serilog;
+using CRUDExample.Filters.ActionFilters;
 
 namespace CRUDExample.Controllers
 {
@@ -17,7 +18,7 @@ namespace CRUDExample.Controllers
         private readonly ILogger<PersonsController> _logger;
         private readonly IDiagnosticContext _diagnosticContext;
 
-        public PersonsController(IPersonService personService, 
+        public PersonsController(IPersonService personService,
             ICountriesService countriesService, IConfiguration configuration,
             ILogger<PersonsController> logger, IDiagnosticContext diagnosticContext)
         {
@@ -30,6 +31,8 @@ namespace CRUDExample.Controllers
 
         [Route("index")]
         [Route("/")]
+        [TypeFilter(typeof(PersonsListActionFilter))]
+        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "X-Custom-Key", "X-Custom-Value" })]
         public async Task<IActionResult> Index(PersonSearchOptions searchBy, string? search,
             PersonSearchOptions? sortBy, SortOrderOptions sortOrder)
         {
@@ -55,12 +58,6 @@ namespace CRUDExample.Controllers
 
             //Sort List
             persons = await _personService.GetSortedPersons(persons, sortBy, sortOrder);
-
-            //Persist current values of searchBy, search, sortBy, sortOrder
-            ViewBag.CurrentSearchBy = searchBy;
-            ViewBag.CurrentSearch = search;
-            ViewBag.CurrentSortBy = sortBy;
-            ViewBag.CurrentSortOrder = sortOrder;
 
             return View(persons);
         }

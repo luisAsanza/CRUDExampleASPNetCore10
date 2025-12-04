@@ -7,9 +7,7 @@ using Rotativa.AspNetCore;
 using ServiceContracts;
 using Services;
 using Serilog;
-using Serilog.Context;
-using Serilog.Sinks.InMemory;
-
+using CRUDExample.Filters.ActionFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,13 +36,7 @@ builder.Host.UseSerilog((context, sp, loggerConfiguration) => {
     .ReadFrom.Services(sp)
     .Enrich.WithMachineName();
 
-    if (context.HostingEnvironment.IsEnvironment("Testing"))
-    {
-        loggerConfiguration.MinimumLevel.Information();
-        loggerConfiguration.MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning);
-        loggerConfiguration.WriteTo.InMemory();
-    }
-    else
+    if (!context.HostingEnvironment.IsEnvironment("Testing"))
     {
         loggerConfiguration.ReadFrom.Configuration(context.Configuration);
     }
