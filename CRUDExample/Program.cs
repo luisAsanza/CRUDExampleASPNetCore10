@@ -7,7 +7,6 @@ using Rotativa.AspNetCore;
 using ServiceContracts;
 using Services;
 using Serilog;
-using CRUDExample.Filters.ActionFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 
