@@ -32,7 +32,7 @@ namespace CRUDExample.Controllers
         [Route("index")]
         [Route("/")]
         [TypeFilter(typeof(PersonsListActionFilter))]
-        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "X-Custom-Key", "X-Custom-Value", 1 })]
+        [TypeFilter(typeof(ResponseHeaderActionFilterAsync), Arguments = new object[] { "X-Custom-Key", "X-Custom-Value", 1 })]
         public async Task<IActionResult> Index(PersonSearchOptions searchBy, string? search,
             PersonSearchOptions? sortBy, SortOrderOptions sortOrder)
         {
@@ -63,7 +63,7 @@ namespace CRUDExample.Controllers
         }
 
         [Route("create")]
-        [HttpGet]
+        [HttpGet]        
         public async Task<IActionResult> Create()
         {
             var countries = await _countriesService.GetAllCountries();
@@ -79,21 +79,9 @@ namespace CRUDExample.Controllers
 
         [Route("create")]
         [HttpPost]
+        [TypeFilter(typeof(PersonsCreateAndEditActionFilter))]
         public async Task<IActionResult> Create(PersonAddRequest personAddRequest)
         {
-
-            if (!ModelState.IsValid)
-            {
-                var countries = await _countriesService.GetAllCountries();
-                ViewBag.Countries = countries.Select(countries => new SelectListItem()
-                {
-                    Text = countries.CountryName,
-                    Value = countries.CountryId.ToString()
-                }).ToList();
-                ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                return View();
-            }
-
             PersonResponse personResponse = await _personService.AddPerson(personAddRequest);
 
             return RedirectToAction("Index");
@@ -124,6 +112,7 @@ namespace CRUDExample.Controllers
         [HttpPost]
         [Route("[action]/{personId}")]
         [ValidateAntiForgeryToken]
+        [TypeFilter(typeof(PersonsCreateAndEditActionFilter))]
         public async Task<IActionResult> Edit(PersonUpdateRequest request)
         {
             PersonResponse? personResponse = await _personService.GetPerson(request.PersonId);
@@ -131,16 +120,6 @@ namespace CRUDExample.Controllers
             if (personResponse is null)
             {
                 return RedirectToAction("Index");
-            }
-
-            if (!ModelState.IsValid) {
-                var countries = await _countriesService.GetAllCountries();
-                ViewBag.Countries = countries.Select(countries => new SelectListItem()
-                {
-                    Text = countries.CountryName,
-                    Value = countries.CountryId.ToString()
-                }).ToList();
-                return View(request);
             }
 
             await _personService.UpdatePerson(request);

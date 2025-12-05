@@ -44,8 +44,9 @@ builder.Host.UseSerilog((context, sp, loggerConfiguration) => {
 //Connection string
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-//Add services for Controllers
-builder.Services.AddControllersWithViews();
+//Add services for Controllers (Temporarily disabling client-side validation)
+builder.Services.AddControllersWithViews()
+    .AddViewOptions(vo => vo.HtmlHelperOptions.ClientValidationEnabled = true);
 
 //Add memory cache
 builder.Services.AddMemoryCache();
