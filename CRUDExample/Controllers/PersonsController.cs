@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ServiceContracts;
-using ServiceContracts.DTO;
-using ServiceContracts.Enums;
+﻿using CRUDExample.Filters.ActionFilters;
+using CRUDExample.Filters.ResultFilters;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rotativa.AspNetCore;
 using Serilog;
-using CRUDExample.Filters.ActionFilters;
+using ServiceContracts;
+using ServiceContracts.DTO;
+using ServiceContracts.Enums;
 
 namespace CRUDExample.Controllers
 {
@@ -33,6 +34,7 @@ namespace CRUDExample.Controllers
         [Route("/")]
         [TypeFilter(typeof(PersonsListActionFilter))]
         [TypeFilter(typeof(ResponseHeaderActionFilterAsync), Arguments = new object[] { "X-Custom-Key", "X-Custom-Value", 1 })]
+        [TypeFilter(typeof(PersonsListResultFilter))]
         public async Task<IActionResult> Index(PersonSearchOptions searchBy, string? search,
             PersonSearchOptions? sortBy, SortOrderOptions sortOrder)
         {
