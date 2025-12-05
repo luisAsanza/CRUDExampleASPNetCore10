@@ -7,6 +7,7 @@ using Rotativa.AspNetCore;
 using ServiceContracts;
 using Services;
 using Serilog;
+using CRUDExample.Filters.ActionFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,8 +46,10 @@ builder.Host.UseSerilog((context, sp, loggerConfiguration) => {
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 //Add services for Controllers (Temporarily disabling client-side validation)
-builder.Services.AddControllersWithViews()
-    .AddViewOptions(vo => vo.HtmlHelperOptions.ClientValidationEnabled = true);
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<GlobalActionFilter>();
+}).AddViewOptions(vo => vo.HtmlHelperOptions.ClientValidationEnabled = true);
 
 //Add memory cache
 builder.Services.AddMemoryCache();
