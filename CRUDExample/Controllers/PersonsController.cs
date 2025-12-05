@@ -1,4 +1,6 @@
 ﻿using CRUDExample.Filters.ActionFilters;
+using CRUDExample.Filters.ExceptionFilters;
+using CRUDExample.Filters.ResourceFilters;
 using CRUDExample.Filters.ResultFilters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +13,7 @@ using ServiceContracts.Enums;
 namespace CRUDExample.Controllers
 {
     [Route("[controller]")]
+    [TypeFilter(typeof(HandleExceptionFilter))]
     public class PersonsController : Controller
     {
         private readonly IPersonService _personService;
@@ -65,7 +68,8 @@ namespace CRUDExample.Controllers
         }
 
         [Route("create")]
-        [HttpGet]        
+        [HttpGet]
+        [TypeFilter(typeof(FeatureDisabledResourceFilter))]
         public async Task<IActionResult> Create()
         {
             var countries = await _countriesService.GetAllCountries();
@@ -75,13 +79,12 @@ namespace CRUDExample.Controllers
                 Value = countries.CountryId.ToString()
             }).ToList();
 
-
             return View(new PersonAddRequest());
         }
 
         [Route("create")]
         [HttpPost]
-        [TypeFilter(typeof(PersonsCreateAndEditActionFilter))]
+        [TypeFilter(typeof(PersonsCreateAndEditActionFilter))]        
         public async Task<IActionResult> Create(PersonAddRequest personAddRequest)
         {
             PersonResponse personResponse = await _personService.AddPerson(personAddRequest);
