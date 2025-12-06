@@ -14,6 +14,7 @@ namespace CRUDExample.Controllers
 {
     [Route("[controller]")]
     [TypeFilter(typeof(HandleExceptionFilter))]
+    [ResponseHeaderFilterFactory]
     public class PersonsController : Controller
     {
         private readonly IPersonService _personService;
@@ -36,7 +37,7 @@ namespace CRUDExample.Controllers
         [Route("index")]
         [Route("/")]
         [TypeFilter(typeof(PersonsListActionFilter))]
-        [TypeFilter(typeof(ResponseHeaderActionFilterAsync), Arguments = new object[] { "X-Custom-Key", "X-Custom-Value", 1 })]
+        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "X-Custom-Key", "X-Custom-Value", 1 })]
         [TypeFilter(typeof(PersonsListResultFilter))]
         public async Task<IActionResult> Index(PersonSearchOptions searchBy, string? search,
             PersonSearchOptions? sortBy, SortOrderOptions sortOrder)

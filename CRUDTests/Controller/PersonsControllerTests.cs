@@ -67,10 +67,11 @@ namespace CRUDTests.Controller
             view.Model.As<List<PersonResponse>>().Should().BeInAscendingOrder(p => p.PersonName);
             capturedForSort.Should().BeSameAs(filtered);
 
-            ((PersonSearchOptions)_controller.ViewBag.CurrentSearchBy).Should().Be(searchBy);
-            ((string?)_controller.ViewBag.CurrentSearch).Should().Be(search);
-            ((PersonSearchOptions?)_controller.ViewBag.CurrentSortBy).Should().Be(sortBy);
-            ((SortOrderOptions)_controller.ViewBag.CurrentSortOrder).Should().Be(sortOrder);
+            //TODO: ViewBags are now being set in a filter attribute - need to test differently
+            //((PersonSearchOptions)_controller.ViewBag.CurrentSearchBy).Should().Be(searchBy);
+            //((string?)_controller.ViewBag.CurrentSearch).Should().Be(search);
+            //((PersonSearchOptions?)_controller.ViewBag.CurrentSortBy).Should().Be(sortBy);
+            //((SortOrderOptions)_controller.ViewBag.CurrentSortOrder).Should().Be(sortOrder);
 
             var searchFields = ((Dictionary<PersonSearchOptions, string>)_controller.ViewBag.SearchFields);
             searchFields.Should().NotBeNull();
