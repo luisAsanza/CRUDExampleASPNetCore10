@@ -1,15 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ServiceContracts;
-using ServiceContracts.DTO;
-using ServiceContracts.Enums;
+﻿using CRUDExample.Filters.ActionFilters;
+using CRUDExample.Filters.ExceptionFilters;
+using CRUDExample.Filters.ResourceFilters;
+using CRUDExample.Filters.ResultFilters;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rotativa.AspNetCore;
 using Serilog;
-using CRUDExample.Filters.ActionFilters;
+using ServiceContracts;
+using ServiceContracts.DTO;
+using ServiceContracts.Enums;
 
 namespace CRUDExample.Controllers
 {
     [Route("[controller]")]
+    [TypeFilter(typeof(HandleExceptionFilter))]
+    [ResponseHeaderFilterFactory]
     public class PersonsController : Controller
     {
         private readonly IPersonService _personService;
@@ -32,7 +37,8 @@ namespace CRUDExample.Controllers
         [Route("index")]
         [Route("/")]
         [TypeFilter(typeof(PersonsListActionFilter))]
-        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "X-Custom-Key", "X-Custom-Value" })]
+        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "X-Custom-Key", "X-Custom-Value", 1 })]
+        [TypeFilter(typeof(PersonsListResultFilter))]
         public async Task<IActionResult> Index(PersonSearchOptions searchBy, string? search,
             PersonSearchOptions? sortBy, SortOrderOptions sortOrder)
         {
@@ -64,6 +70,7 @@ namespace CRUDExample.Controllers
 
         [Route("create")]
         [HttpGet]
+        [TypeFilter(typeof(FeatureDisabledResourceFilter))]
         public async Task<IActionResult> Create()
         {
             var countries = await _countriesService.GetAllCountries();
@@ -73,27 +80,14 @@ namespace CRUDExample.Controllers
                 Value = countries.CountryId.ToString()
             }).ToList();
 
-
             return View(new PersonAddRequest());
         }
 
         [Route("create")]
         [HttpPost]
+        [TypeFilter(typeof(PersonsCreateAndEditActionFilter))]        
         public async Task<IActionResult> Create(PersonAddRequest personAddRequest)
         {
-
-            if (!ModelState.IsValid)
-            {
-                var countries = await _countriesService.GetAllCountries();
-                ViewBag.Countries = countries.Select(countries => new SelectListItem()
-                {
-                    Text = countries.CountryName,
-                    Value = countries.CountryId.ToString()
-                }).ToList();
-                ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                return View();
-            }
-
             PersonResponse personResponse = await _personService.AddPerson(personAddRequest);
 
             return RedirectToAction("Index");
@@ -124,6 +118,7 @@ namespace CRUDExample.Controllers
         [HttpPost]
         [Route("[action]/{personId}")]
         [ValidateAntiForgeryToken]
+        [TypeFilter(typeof(PersonsCreateAndEditActionFilter))]
         public async Task<IActionResult> Edit(PersonUpdateRequest request)
         {
             PersonResponse? personResponse = await _personService.GetPerson(request.PersonId);
@@ -131,16 +126,6 @@ namespace CRUDExample.Controllers
             if (personResponse is null)
             {
                 return RedirectToAction("Index");
-            }
-
-            if (!ModelState.IsValid) {
-                var countries = await _countriesService.GetAllCountries();
-                ViewBag.Countries = countries.Select(countries => new SelectListItem()
-                {
-                    Text = countries.CountryName,
-                    Value = countries.CountryId.ToString()
-                }).ToList();
-                return View(request);
             }
 
             await _personService.UpdatePerson(request);
