@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CRUDExample.Filters.ActionFilters
 {
@@ -14,9 +13,11 @@ namespace CRUDExample.Filters.ActionFilters
 
         public IFilterMetadata CreateInstance(IServiceProvider serviceProvider)
         {
-            //Return filter object
-            var filter = new ResponseHeaderActionFilter(NullLogger<ResponseHeaderActionFilter>.Instance,
-                "key-123", "value-123", 0);
+            //Return filter object. ActivatorUtilities looks at the ctor to see what arguments receive,
+            //then uses the DI container to inject services or uses the explicit parameters passed.
+            var filter = ActivatorUtilities.CreateInstance<ResponseHeaderActionFilter>(
+                serviceProvider, "key-123", "value-123");
+
             return filter;
         }
     }
