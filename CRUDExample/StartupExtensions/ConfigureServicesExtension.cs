@@ -33,7 +33,7 @@ namespace CRUDExample
             //}
 
             //Instead of selecting built-in Logging Providers, you can also use third-party logging providers such as Serilog, NLog, etc.
-            builder.Host.UseSerilog((context, sp, loggerConfiguration) => {
+            builder!.Host.UseSerilog((context, sp, loggerConfiguration) => {
                 loggerConfiguration
                 .ReadFrom.Services(sp)
                 .Enrich.WithMachineName();
@@ -49,6 +49,9 @@ namespace CRUDExample
             {
                 options.Filters.Add<GlobalActionFilter>();
             }).AddViewOptions(vo => vo.HtmlHelperOptions.ClientValidationEnabled = true);
+
+            //Error page is a razor page
+            builder.Services.AddRazorPages();
 
             //Add memory cache
             builder.Services.AddMemoryCache();

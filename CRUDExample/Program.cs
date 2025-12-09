@@ -9,6 +9,15 @@ builder.ConfigureServices();
 
 var app = builder.Build();
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
+    // Use HSTS in production
+    //app.UseHsts();
+}
+
 // Use Serilog custom middleware to enrich logs with Username
 app.Use(async (ctx, next) =>
 {
@@ -52,6 +61,7 @@ app.Logger.LogDebug("End of Csp configuration");
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
+app.MapRazorPages();
 app.UseRotativa();
 
 app.Run();

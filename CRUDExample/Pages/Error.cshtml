@@ -1,0 +1,20 @@
+﻿@page "{code?}"
+@using CRUDExample.Pages
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="text-center mt-5">
+    @if (Model.StatusCode == 404)
+    {
+        <h1 class="text-danger">404 - Page Not Found</h1>
+        <p class="lead">The page you are looking for doesn't exist.</p>
+    }
+    else
+    {
+        <h1 class="text-danger">Error @Model.StatusCode</h1>
+        <p class="lead">An error occurred while processing your request.</p>
+    }
+
+</div>
