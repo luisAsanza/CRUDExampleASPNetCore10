@@ -9,6 +9,7 @@ builder.ConfigureServices();
 
 var app = builder.Build();
 
+// Configure the error handling middleware using the built-in ExceptionHandler middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -17,6 +18,13 @@ if (!app.Environment.IsDevelopment())
     // Use HSTS in production
     //app.UseHsts();
 }
+
+//Configure the error handling middleware using custom middleware for demostration purposes
+//(Not recommended, use the built-in ExceptionHandler middleware instead)
+//app.UseCustomExceptionHandlingMiddleware();
+
+// Use custom middleware to log request bodies for debugging (Not recommended for production)
+app.UseCustomExceptionLoggerMiddleware();
 
 // Use Serilog custom middleware to enrich logs with Username
 app.Use(async (ctx, next) =>
@@ -61,7 +69,7 @@ app.Logger.LogDebug("End of Csp configuration");
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
-app.MapRazorPages();
+//app.MapRazorPages();
 app.UseRotativa();
 
 app.Run();
