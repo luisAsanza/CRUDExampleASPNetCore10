@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Entities;
+using Exceptions;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using RepositoryContracts;
@@ -195,7 +196,7 @@ namespace Services
             Person? current = await _personsRepository.GetAsync(personUpdateRequest.PersonId);
 
             if (current == null)
-                throw new ArgumentException("Given Person ID  doesn't exist");
+                throw new InvalidPersonIdException("Given Person ID  doesn't exist", nameof(personUpdateRequest.PersonId));
 
             current.PersonName = personUpdateRequest.PersonName;
             current.Email = personUpdateRequest.Email;
