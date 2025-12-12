@@ -1,7 +1,5 @@
-﻿using Castle.Core.Logging;
-using Entities;
+﻿using Entities;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using RepositoryContracts;
 using ServiceContracts;
@@ -12,16 +10,10 @@ namespace Services
     public class CountriesService : ICountriesService
     {
         private readonly ICountriesRepository _countriesRepository;
-        private readonly ICacheService _cacheService;
-        private const string COUNTRIES_CACHE_KEY = "countries_all";
-        private readonly ILogger<CountriesService> _logger;
 
-        public CountriesService(ICountriesRepository countriesRepository, 
-            ICacheService cacheService, ILogger<CountriesService> logger)
+        public CountriesService(ICountriesRepository countriesRepository)
         {
             _countriesRepository = countriesRepository;
-            _cacheService = cacheService;
-            _logger = logger;
         }
 
         public async Task<CountryResponse> AddCountry(CountryAddRequest? countryAddRequest)
@@ -41,27 +33,13 @@ namespace Services
 
             await _countriesRepository.AddAsync(country);
 
-            // Invalidate cache when new country is added
-            _cacheService.Remove(COUNTRIES_CACHE_KEY);
-
             return country.ToCountryResponse();
         }
 
         public async Task<List<CountryResponse>> GetAllCountries()
         {
-            // Try to get from cache first
-            if (_cacheService.TryGetValue(COUNTRIES_CACHE_KEY, out List<CountryResponse>? cachedCountries))
-            {
-                return cachedCountries!;
-            }
-
-            // If not in cache, fetch from repository
             var countries = await _countriesRepository.GetAllAsync();
             var countryResponseList = countries.Select(c => c.ToCountryResponse()).ToList();
-
-            // Store in cache for 30 minutes
-            _cacheService.Set(COUNTRIES_CACHE_KEY, countryResponseList, absoluteExpirationMinutes: 30);
-
             return countryResponseList;
         }
 
@@ -78,7 +56,7 @@ namespace Services
 
         public async Task<int> UploadCountriesFromExcelFile(IFormFile formFile)
         {
-            if(formFile == null || formFile.Length == 0 || !formFile.FileName.EndsWith(".xlsx"))
+            if (formFile == null || formFile.Length == 0 || !formFile.FileName.EndsWith(".xlsx"))
             {
                 throw new ArgumentException("Invalid file");
             }
@@ -89,17 +67,17 @@ namespace Services
             using (ExcelPackage excelPackage = new ExcelPackage(memoryStream))
             {
                 var worksheet = excelPackage.Workbook.Worksheets.FirstOrDefault();
-                if(worksheet == null) return 0;
+                if (worksheet == null) return 0;
                 var rowCount = worksheet.Dimension.Rows;
                 const int headerRow = 1;
                 var validCountries = new List<Country>();
 
-                for (var row = headerRow + 1; row<=rowCount; row++)
+                for (var row = headerRow + 1; row <= rowCount; row++)
                 {
                     var cellValue = worksheet.Cells[row, 1].Value?.ToString();
 
                     //Add validated country to the list
-                    if (!string.IsNullOrWhiteSpace(cellValue) 
+                    if (!string.IsNullOrWhiteSpace(cellValue)
                         && !await _countriesRepository.AnyAsync(c => c.CountryName == cellValue))
                     {
                         validCountries.Add(new Country()
@@ -111,10 +89,6 @@ namespace Services
                 }
 
                 await _countriesRepository.AddRangeAsync(validCountries);
-
-                // Invalidate cache when countries are uploaded
-                _cacheService.Remove(COUNTRIES_CACHE_KEY);
-
                 return validCountries.Count();
             }
         }

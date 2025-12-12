@@ -59,11 +59,15 @@ namespace CRUDExample
 
             //Add other services
             builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
-            builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();
-            builder.Services.AddScoped<ICountriesService, CountriesService>();
+            builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();            
             builder.Services.AddScoped<IPersonService, PersonService>();
 
-
+            builder.Services.AddScoped<CountriesService>();
+            builder.Services.AddScoped<ICountriesService>(provider =>
+                new CountriesCachedService(
+                        provider.GetRequiredService<CountriesService>(),
+                        provider.GetRequiredService<ICacheService>()
+            ));
 
             //DB
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

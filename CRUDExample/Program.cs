@@ -43,7 +43,6 @@ app.Use(async (ctx, next) =>
 // Log every request using Serilog. app.UseHttpLogging(); can be removed so it won't generate http requests logs twice
 app.UseSerilogRequestLogging();
 
-
 app.Logger.LogDebug("Adding Csp configuration");
 
 //Add csp to responses
