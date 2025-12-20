@@ -1,5 +1,4 @@
 ﻿using CRUDExample.Filters.ActionFilters;
-using CRUDExample.Filters.ExceptionFilters;
 using CRUDExample.Filters.ResourceFilters;
 using CRUDExample.Filters.ResultFilters;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using Serilog;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
+using ServiceContracts.ReportGenerator;
 
 namespace CRUDExample.Controllers
 {
@@ -19,16 +19,19 @@ namespace CRUDExample.Controllers
     {
         private readonly IPersonService _personService;
         private readonly ICountriesService _countriesService;
+        private readonly IFactoryReportGenerator _factoryReportGenerator;
         private readonly IConfiguration _configuration;
         private readonly ILogger<PersonsController> _logger;
         private readonly IDiagnosticContext _diagnosticContext;
 
         public PersonsController(IPersonService personService,
-            ICountriesService countriesService, IConfiguration configuration,
+            ICountriesService countriesService, IFactoryReportGenerator factoryReportGenerator,
+            IConfiguration configuration,
             ILogger<PersonsController> logger, IDiagnosticContext diagnosticContext)
         {
             _personService = personService;
             _countriesService = countriesService;
+            _factoryReportGenerator = factoryReportGenerator;
             _configuration = configuration;
             _logger = logger;
             _diagnosticContext = diagnosticContext;
@@ -182,7 +185,11 @@ namespace CRUDExample.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PersonsCSV()
         {
-            MemoryStream memoryStream = await _personService.GetPersonsCSVConfiguration();
+            const ReportOptions reportOption = ReportOptions.CSV;
+            //const ReportOptions reportOption = ReportOptions.CSVConfigured;
+            IStrategyReportGenerator reportGenerator = _factoryReportGenerator.GetStrategy(reportOption);
+            var allPersons = await _personService.GetAllPersons();
+            MemoryStream memoryStream = await reportGenerator.GenerateAllPersonsReport(allPersons);
 
             //Use application/octet-stream when we want browser to download the file
             //return File(memoryStream, "application/octet-stream", "Persons.csv");
@@ -195,7 +202,11 @@ namespace CRUDExample.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PersonsExcel()
         {
-            MemoryStream memoryStream = await _personService.GetPersonsExcel();
+            const ReportOptions reportOption = ReportOptions.Excel;
+            IStrategyReportGenerator reportGenerator = _factoryReportGenerator.GetStrategy(reportOption);
+            var allPersons = await _personService.GetAllPersons();
+            MemoryStream memoryStream = await reportGenerator.GenerateAllPersonsReport(allPersons);
+
             return File(memoryStream, "application/vnd.openxmlformats-officedocument", "Persons.xlsx");
         }
 

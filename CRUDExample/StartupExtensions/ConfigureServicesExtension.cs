@@ -5,7 +5,9 @@ using Repositories;
 using RepositoryContracts;
 using Serilog;
 using ServiceContracts;
+using ServiceContracts.ReportGenerator;
 using Services;
+using Services.ReportGenerator;
 
 namespace CRUDExample
 {
@@ -61,6 +63,11 @@ namespace CRUDExample
             builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
             builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();            
             builder.Services.AddScoped<IPersonService, PersonService>();
+
+            builder.Services.AddScoped<IFactoryReportGenerator, FactoryReportGenerator>();
+            builder.Services.AddScoped<ExcelStrategyReportGenerator>();
+            builder.Services.AddScoped<CsvStrategyReportGenerator>();
+            builder.Services.AddScoped<CsvConfiguredStrategyReportGenerator>();
 
             builder.Services.AddScoped<CountriesService>();
             builder.Services.AddScoped<ICountriesService>(provider =>
