@@ -1,0 +1,56 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "CleanCRUDSolution.Infrastructure/1.0.0": {
+        "dependencies": {
+          "CleanCRUDSolution.Application": "1.0.0",
+          "CleanCRUDSolution.Domain": "1.0.0"
+        },
+        "runtime": {
+          "CleanCRUDSolution.Infrastructure.dll": {}
+        }
+      },
+      "CleanCRUDSolution.Application/1.0.0": {
+        "dependencies": {
+          "CleanCRUDSolution.Domain": "1.0.0"
+        },
+        "runtime": {
+          "CleanCRUDSolution.Application.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "CleanCRUDSolution.Domain/1.0.0": {
+        "runtime": {
+          "CleanCRUDSolution.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "CleanCRUDSolution.Infrastructure/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CleanCRUDSolution.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CleanCRUDSolution.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

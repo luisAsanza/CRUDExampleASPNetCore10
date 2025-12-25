@@ -1,0 +1,6 @@
+@CleanCRUDSolution.Api_HostAddress = http://localhost:5003
+
+GET {{CleanCRUDSolution.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

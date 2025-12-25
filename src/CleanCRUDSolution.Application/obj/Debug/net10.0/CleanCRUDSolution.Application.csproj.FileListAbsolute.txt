@@ -1,0 +1,16 @@
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\bin\Debug\net10.0\CleanCRUDSolution.Application.deps.json
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\bin\Debug\net10.0\CleanCRUDSolution.Application.dll
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\bin\Debug\net10.0\CleanCRUDSolution.Application.pdb
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\bin\Debug\net10.0\CleanCRUDSolution.Domain.dll
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\bin\Debug\net10.0\CleanCRUDSolution.Domain.pdb
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\CleanCRUDSolution.Application.csproj.AssemblyReference.cache
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\CleanCRUDSolution.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\CleanCRUDSolution.Application.AssemblyInfoInputs.cache
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\CleanCRUDSolution.Application.AssemblyInfo.cs
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\CleanCRUDSolution.Application.csproj.CoreCompileInputs.cache
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\CleanCRUDSolution.Application.sourcelink.json
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\CleanCRU.6D14D515.Up2Date
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\CleanCRUDSolution.Application.dll
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\refint\CleanCRUDSolution.Application.dll
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\CleanCRUDSolution.Application.pdb
+C:\Users\luisa\source\repos\CleanCRUDSolution\src\CleanCRUDSolution.Application\obj\Debug\net10.0\ref\CleanCRUDSolution.Application.dll
